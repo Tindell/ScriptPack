@@ -62,14 +62,35 @@ def test_regex(json_data):
     data = json.loads(json_data)
     examples = data["examples"]
     regex_pattern = data["regex"]
+    print("\nPattern: ", regex_pattern, "\n\n")
+    print("Testing the Regex Pattern: ", regex_pattern, " with generated input\n")
     
     for example in examples:
         example = example.strip()
         match = re.search(regex_pattern, example)
         if match:
-            print(f"{example}: Match")
+            print(f"{example}:\nMatch")
         else:
-            print(f"{example}: No Match")
+            print(f"{example}:\nNo Match")
+
+    user_input_regex_test(regex_pattern)
+
+def user_input_regex_test(regex_pattern):
+    print(f"\nTesting user input against regex pattern: {regex_pattern}")
+    print("Enter 'q' or 'Q' to quit.")
+
+    while True:
+        user_input = input("Enter your input: ")
+
+        if user_input.lower() == 'q':
+            break
+
+        match = re.search(regex_pattern, user_input)
+        if match:
+            print("Match")
+        else:
+            print("No Match")
+
 
 
 
