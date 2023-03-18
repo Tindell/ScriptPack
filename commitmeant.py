@@ -34,14 +34,14 @@ def main():
 
     # Generate the commit message using the OpenAI Chat API
     messages = [
-        {"role": "system", "content": "Generate a commit message based on the following git diff:"},
+        {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
         {"role": "user", "content": git_diff},
     ]
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        max_tokens=50,
+        max_tokens=100,
         n=1,
         temperature=0.5,
     )
