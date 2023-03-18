@@ -2,53 +2,61 @@ import os
 import subprocess
 import openai
 
-# Read the API key from the api_key file
-with open("openai.key", "r") as api_key_file:
-    OPENAI_API_KEY = api_key_file.read().strip()
+def main():
+    # Read the API key from the api_key fileimport os
 
-# Set the API key for the openai library
-openai.api_key = OPENAI_API_KEY
+    api_key_path = os.path.expanduser('~/projects/ScriptPack/openai.key')
+    with open(api_key_path, "r") as api_key_file:
+        OPENAI_API_KEY = api_key_file.read().strip()
 
-# Ensure the working directory is a git repository
-try:
-    subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], check=True, capture_output=True)
-except subprocess.CalledProcessError:
-    print("This script must be run inside a git repository.")
-    exit(1)
+    # Set the API key for the openai library
+    openai.api_key = OPENAI_API_KEY
 
-# Stage all current changes
-subprocess.run(["git", "add", "."])
+    # Ensure the working directory is a git repository
+    try:
+        subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], check=True, capture_output=True)
+    except subprocess.CalledProcessError:
+        print("This script must be run inside a git repository.")
+        exit(1)
 
-# Check for uncommitted changes
-if not subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode:
-    print("No changes detected. Exiting.")
-    exit(0)
+    # Stage all current changes
+    subprocess.run(["git", "add", "."])
 
-# Get the git diff
-git_diff = subprocess.run(["git", "diff",  "--cached", "--no-color"], capture_output=True, text=True).stdout
+    # Check for uncommitted changes
+    if not subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode:
+        print("No changes detected. Exiting.")
+        exit(0)
 
-print("Raw diff: ", git_diff)
+    # Get the git diff
+    git_diff = subprocess.run(["git", "diff",  "--cached", "--no-color"], capture_output=True, text=True).stdout
 
-# Generate the commit message using the OpenAI Chat API
-messages = [
-    {"role": "system", "content": "Generate a commit message based on the following git diff:"},
-    {"role": "user", "content": git_diff},
-]
+    print("Raw diff: ", git_diff)
 
-response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=messages,
-    max_tokens=50,
-    n=1,
-    temperature=0.5,
-)
+    # Generate the commit message using the OpenAI Chat API
+    messages = [
+        {"role": "system", "content": "Generate a commit message based on the following git diff:"},
+        {"role": "user", "content": git_diff},
+    ]
 
-# Print the raw API response
-print("Raw API response:", response)
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        max_tokens=50,
+        n=1,
+        temperature=0.5,
+    )
 
-commit_message = response.choices[0].message["content"].strip()
+    # Print the raw API response
+    print("Raw API response:", response)
 
-# Commit the changes with the generated message
-subprocess.run(["git", "commit", "-m", commit_message])
+    commit_message = response.choices[0].message["content"].strip()
 
-print(f"Committed changes with message: {commit_message}")
+    # Commit the changes with the generated message
+    subprocess.run(["git", "commit", "-m", commit_message])
+
+    print(f"Committed changes with message: {commit_message}")
+
+
+
+if __name__ == "__main__":
+    main()

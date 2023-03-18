@@ -1,4 +1,22 @@
 #!/bin/sh
 
-cd ~/projects/ScriptPack 
-pipenv run python commitmeant.py
+original_directory=$(pwd)
+
+# Find the actual location of the script
+script_path="$0"
+while [ -L "$script_path" ]; do
+  script_path=$(readlink "$script_path")
+done
+script_directory=$(dirname "$script_path")
+
+cd "$script_directory"
+pipenv run python -c "
+import os
+import sys
+
+os.chdir('$original_directory')
+sys.path.insert(0, '$script_directory')
+
+from commitmeant import main
+main()
+"
