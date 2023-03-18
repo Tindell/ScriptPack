@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd ~/projects/ScriptPack 
+pipenv run python commitmeant.py
