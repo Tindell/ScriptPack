@@ -1,2 +1,3 @@
-# ScriptPack
-Public scripts experimenting with some LLM APIs
+# IssueGenie
+## Running locally
+> pipenv run python ...
