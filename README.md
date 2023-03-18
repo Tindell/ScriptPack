@@ -1,3 +1,3 @@
-# IssueGenie
+# ScriptPack
 ## Running locally
 > pipenv run python ...
