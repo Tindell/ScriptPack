@@ -98,7 +98,9 @@ def user_input_regex_test(regex_pattern):
         else:
             print("No Match")
 
-def main(prompt):
+def main():
+    prompt = input("Please enter a prompt: ")
+
     if not prompt:
         print("nothing")
         sys.exit(1)
@@ -107,4 +109,4 @@ def main(prompt):
     test_regex(json_data)
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    main()

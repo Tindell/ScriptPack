@@ -18,5 +18,5 @@ os.chdir('$original_directory')
 sys.path.insert(0, '$script_directory')
 
 from mayberegex import main
-main(\"\"\"$1\"\"\")
+main()
 "
