@@ -17,9 +17,7 @@ then you say:
 Let's start.
 '''
 
-api_key_path = os.path.expanduser('~/projects/ScriptPack/openai.key')
-with open(api_key_path, "r") as api_key_file:
-    OPENAI_API_KEY = api_key_file.read().strip()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 def fetch_json_data(prompt):

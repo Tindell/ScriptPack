@@ -3,9 +3,7 @@ import subprocess
 import openai
 
 def main():
-    api_key_path = os.path.expanduser('~/projects/ScriptPack/openai.key')
-    with open(api_key_path, "r") as api_key_file:
-        OPENAI_API_KEY = api_key_file.read().strip()
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
     openai.api_key = OPENAI_API_KEY
 
