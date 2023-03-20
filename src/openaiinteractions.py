@@ -2,6 +2,7 @@ import os
 import openai
 import configparser
 import tiktoken
+import sseclient
 
 class OpenAIInteraction:
     def __init__(self, config_file='config.ini'):
@@ -15,7 +16,7 @@ class OpenAIInteraction:
         openai.api_key = self.api_key
 
 
-    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5):
+    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False):
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content},
@@ -28,7 +29,20 @@ class OpenAIInteraction:
                 max_tokens=max_tokens,
                 n=1,
                 temperature=temperature,
+                stream=stream,
             )
+
+            # TODO: maybe just return the stream? streaming should probably be it's own method
+            if(stream):
+                ret = ""
+                # receive a stream of text from the model
+                for chunk in response:
+                    if "delta" in chunk.choices[0]:
+                        if "content" in chunk["choices"][0]["delta"]:
+                            ret += chunk["choices"][0]["delta"]["content"]
+                            print(chunk["choices"][0]["delta"]["content"], end="", flush=True)
+                print()
+                return ret
 
             if self.printResponse:
                 print("Complete response: ", response)

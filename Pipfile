@@ -8,6 +8,7 @@ requests = "*"
 openai = "*"
 pyperclip = "*"
 tiktoken = "*"
+sseclient = "*"
 
 [dev-packages]
 
