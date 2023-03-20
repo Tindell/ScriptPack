@@ -21,15 +21,15 @@ class GitCommitHelper(OpenAIInteraction):
 
     def get_git_diff(self):
         git_diff = subprocess.run(["git", "diff", "--cached", "--no-color"], capture_output=True, text=True).stdout
-        # messages = [
-        #     {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
-        #     {"role": "user", "content": git_diff},
-        # ]
-        # token_length = self.num_tokens_from_messages(messages)
+        messages = [
+            {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
+            {"role": "user", "content": git_diff},
+        ]
+        token_length = self.num_tokens_from_messages(messages)
 
-        # if token_length > 4097:
-        #     print("Token length of the git diff is too large (> 4097). Cancelling commit.")
-        #     exit(1)
+        if token_length > 4097:
+            print("Token length of the git diff is too large (> 4097). Cancelling commit.")
+            exit(1)
 
         return git_diff
 

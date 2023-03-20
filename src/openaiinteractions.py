@@ -42,7 +42,7 @@ class OpenAIInteraction:
         else:
             raise ValueError(f"Invalid operation: {self.operation}. Supported operations are 'generate_response' and 'count_tokens'.")
 
-    def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
+    def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):
         """Returns the number of tokens used by a list of messages."""
         try:
             encoding = tiktoken.encoding_for_model(model)
