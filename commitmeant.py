@@ -1,48 +1,52 @@
 import os
 import subprocess
-import openai
+from openaiinteractions import OpenAIInteraction
+
+class GitCommitHelper(OpenAIInteraction):
+    def __init__(self):
+        super().__init__()
+
+    def check_git_repository(self):
+        try:
+            subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], check=True, capture_output=True)
+        except subprocess.CalledProcessError:
+            print("This script must be run inside a git repository.")
+            exit(1)
+
+    def stage_changes(self):
+        subprocess.run(["git", "add", "."])
+
+    def no_changes_detected(self):
+        return not subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode
+
+    def get_git_diff(self):
+        return subprocess.run(["git", "diff", "--cached", "--no-color"], capture_output=True, text=True).stdout
+
+    def commit_changes(self, commit_message):
+        subprocess.run(["git", "commit", "-m", commit_message])
+        print(f"Committed changes with message: {commit_message}")
 
 def main():
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    git_helper = GitCommitHelper()
 
-    openai.api_key = OPENAI_API_KEY
+    git_helper.check_git_repository()
+    git_helper.stage_changes()
 
-    try:
-        subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], check=True, capture_output=True)
-    except subprocess.CalledProcessError:
-        print("This script must be run inside a git repository.")
-        exit(1)
-
-    subprocess.run(["git", "add", "."])
-
-    if not subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode:
+    if git_helper.no_changes_detected():
         print("No changes detected. Exiting.")
         exit(0)
 
-    git_diff = subprocess.run(["git", "diff",  "--cached", "--no-color"], capture_output=True, text=True).stdout
-
+    git_diff = git_helper.get_git_diff()
     print("Raw diff: ", git_diff)
 
     commit_message = ""
     user_accepts = False
 
     while not user_accepts:
-        messages = [
-            {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
-            {"role": "user", "content": git_diff},
-        ]
-
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            max_tokens=100,
-            n=1,
-            temperature=0.5,
+        commit_message = git_helper.generate_response(
+            system_prompt="Generate a short and concise commit message based on the following git diff:",
+            user_content=git_diff,
         )
-
-        print("Raw API response:", response)
-
-        commit_message = response.choices[0].message["content"].strip()
 
         print(f"Suggested commit message: {commit_message}")
         user_input = input("Is this commit message acceptable? (yes/no): ").lower()
@@ -50,9 +54,7 @@ def main():
         if user_input in ["yes", "y"]:
             user_accepts = True
 
-    subprocess.run(["git", "commit", "-m", commit_message])
-
-    print(f"Committed changes with message: {commit_message}")
+    git_helper.commit_changes(commit_message)
 
 if __name__ == "__main__":
     main()
