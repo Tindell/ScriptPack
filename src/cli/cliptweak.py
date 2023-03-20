@@ -4,7 +4,7 @@ import pyperclip
 import openai
 import os
 import math
-from openaiinteractions import OpenAIInteraction
+from src.openaiinteractions import OpenAIInteraction
 
 class ClipTweak(OpenAIInteraction):
     def __init__(self, config_file='config.ini'):

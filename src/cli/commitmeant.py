@@ -1,6 +1,6 @@
 import os
 import subprocess
-from openaiinteractions import OpenAIInteraction
+from src.openaiinteractions import OpenAIInteraction
 
 class GitCommitHelper(OpenAIInteraction):
     def __init__(self):
@@ -20,7 +20,18 @@ class GitCommitHelper(OpenAIInteraction):
         return not subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode
 
     def get_git_diff(self):
-        return subprocess.run(["git", "diff", "--cached", "--no-color"], capture_output=True, text=True).stdout
+        git_diff = subprocess.run(["git", "diff", "--cached", "--no-color"], capture_output=True, text=True).stdout
+        # messages = [
+        #     {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
+        #     {"role": "user", "content": git_diff},
+        # ]
+        # token_length = self.num_tokens_from_messages(messages)
+
+        # if token_length > 4097:
+        #     print("Token length of the git diff is too large (> 4097). Cancelling commit.")
+        #     exit(1)
+
+        return git_diff
 
     def commit_changes(self, commit_message):
         subprocess.run(["git", "commit", "-m", commit_message])

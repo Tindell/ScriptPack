@@ -3,7 +3,7 @@ import json
 import re
 import openai
 import os
-from openaiinteractions import OpenAIInteraction
+from src.openaiinteractions import OpenAIInteraction
 
 systemprompt = '''
 Your job is to provide me a regex string that can be parsed in python based off of the query I ask in english.  Provide your answer as a json document containing the explanation and then examples that will match, then the regex. Provide nothing but the JSON. Make sure it is valid json.
