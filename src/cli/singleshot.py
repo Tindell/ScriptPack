@@ -1,5 +1,3 @@
-# gpt 3.5 solution, with some modification
-
 import openai
 import os
 import math

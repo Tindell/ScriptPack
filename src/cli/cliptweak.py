@@ -1,10 +1,14 @@
-# gpt 3.5 solution, with some modification
-
 import pyperclip
 import openai
 import os
 import math
 from src.openaiinteractions import OpenAIInteraction
+
+system_prompts = {
+    "Simplify copied python code": "Simplify the following python code.  Return only the new python code, with no explaination.",
+    "Summerize copied text ": "Generate a summary for the following text:",
+}
+
 
 class ClipTweak(OpenAIInteraction):
     def __init__(self, config_file='config.ini'):
@@ -26,10 +30,6 @@ class ClipTweak(OpenAIInteraction):
         return assistant_reply.strip()
 
     def select_a_prompt(self):    
-        system_prompts = {
-            "Simplify copied python code": "Simplify the following python code.  Return only the new python code, with no explaination.",
-            "Summerize copied text ": "Generate a summary for the following text:",
-        }
         print("Please choose a system prompt:")
         for index, prompt_name in enumerate(system_prompts.keys(), start=1):
             print(f"{index}: {prompt_name}")

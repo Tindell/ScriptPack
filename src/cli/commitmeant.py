@@ -2,7 +2,7 @@ import os
 import subprocess
 from src.openaiinteractions import OpenAIInteraction
 
-class GitCommitHelper(OpenAIInteraction):
+class Commitmeant(OpenAIInteraction):
     def __init__(self):
         super().__init__()
 
@@ -38,7 +38,7 @@ class GitCommitHelper(OpenAIInteraction):
         print(f"Committed changes with message: {commit_message}")
 
 def main():
-    git_helper = GitCommitHelper()
+    git_helper = Commitmeant()
 
     git_helper.check_git_repository()
     git_helper.stage_changes()

@@ -15,17 +15,11 @@ class OpenAIInteraction:
         self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
 
-
-    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False):
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_content},
-        ]
-
+    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False):
         if self.operation == 'generate_response':
             response = openai.ChatCompletion.create(
                 model=self.model,
-                messages=messages,
+                messages=message,
                 max_tokens=max_tokens,
                 n=1,
                 temperature=temperature,
@@ -37,8 +31,7 @@ class OpenAIInteraction:
                 ret = ""
                 # receive a stream of text from the model
                 for chunk in response:
-                    if "delta" in chunk.choices[0]:
-                        if "content" in chunk["choices"][0]["delta"]:
+                    if "delta" in chunk.choices[0] and "content" in chunk["choices"][0]["delta"]:
                             ret += chunk["choices"][0]["delta"]["content"]
                             print(chunk["choices"][0]["delta"]["content"], end="", flush=True)
                 print()
@@ -49,12 +42,22 @@ class OpenAIInteraction:
 
             return response.choices[0].message.content.strip()
 
+        # This option exists for debugging and creating.
         elif self.operation == 'count_tokens':
-            num_tokens = self.num_tokens_from_messages(messages)
+            num_tokens = self.num_tokens_from_messages(message)
             return num_tokens
 
         else:
             raise ValueError(f"Invalid operation: {self.operation}. Supported operations are 'generate_response' and 'count_tokens'.")
+
+
+
+    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False):
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content},
+        ]
+        return self.generate_message_response(messages, max_tokens, temperature, stream)
 
     def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):
         """Returns the number of tokens used by a list of messages."""
@@ -74,4 +77,19 @@ class OpenAIInteraction:
             return num_tokens
         else:
             raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
+        See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
+
+    def num_tokens_from_string(self, string, model="gpt-3.5-turbo-0301"):
+        """Returns the number of tokens used by a string."""
+        try:
+            encoding = tiktoken.encoding_for_model(model)
+        except KeyError:
+            encoding = tiktoken.get_encoding("cl100k_base")
+        if model == "gpt-3.5-turbo-0301":
+            num_tokens = 4  # start token, role/name, newline, content
+            num_tokens += len(encoding.encode(string))
+            num_tokens += 2  # end token
+            return num_tokens
+        else:
+            raise NotImplementedError(f"""num_tokens_from_string() is not presently implemented for model {model}.
         See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
