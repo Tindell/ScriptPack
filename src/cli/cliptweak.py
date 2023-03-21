@@ -7,7 +7,7 @@ from src.openaiinteractions import OpenAIInteraction
 system_prompts = {
     "Simplify copied python code": "Simplify the following python code.  Return only the new python code, with no explaination.",
     "Summerize copied text ": "Generate a summary for the following text:",
-    "Write a comment describing CPP code": "Write a c++ comment describing the following C++ code:",
+    "Write a comment describing CPP code": "Write a c++ comment with regular line breaks describing the following C++ code:",
 }
 
 

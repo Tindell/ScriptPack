@@ -5,25 +5,37 @@ import openai
 import os
 from src.openaiinteractions import OpenAIInteraction
 
-systemprompt = '''
-Your job is to provide me a regex string that can be parsed in python based off of the query I ask in english.  Provide your answer as a json document containing the explanation and then examples that will match, then the regex. Provide nothing but the JSON. Make sure it is valid json.
-For example, if I say:
-"Find all the lines that contain only lower case letters and spaces"
-then you say:
-"{"explanation": "This regex will match any line that contains only lower case letters and spaces. The '^' and '$' anchors ensure that the regex matches the entire line. The '+' quantifier after the character set '[a-z ]' matches one or more occurrences of lower case letters or spaces. The '^$' alternative matches empty lines.","examples": ["hello world","this is a line with spaces","justlowercaseletters"," a line starting with a space and lowercase letters"],  "regex": "^[a-z ]+$|^$"}"
-As another example, I say: 
-"Find the words separated by a '-'. Example lines that will match include  'Auto-tagging is helpful' or 'You should focus on note-taking'"
-then you say:
-"{"explanation": "This regex will match any line that contains words separated by a '-' character. The character set '\\\\w' matches any word character (alphanumeric or underscore), the '+' quantifier matches one or more occurrences of word characters, and the '-' character is matched. The whole pattern is repeated one or more times with the '\\\\s+' to match one or more non-word characters between each group of words.",  "examples": ["Auto-tagging is helpful","You should focus on note-taking","This-line-has-four-words"],  "regex": "\\w+(?:-\\w+)+"}"
-Let's start.
-'''
+system_messages = [
+    {
+        "role": "system",
+        "content": "Your job is to provide me a regex string that can be parsed in python based off of the query I ask in English. Provide your answer as a JSON document containing the explanation, examples that will match, and the regex. Provide nothing but the JSON. Make sure it is valid JSON."
+    },
+    {
+        "role": "user",
+        "content": "Find all the lines that contain only lower case letters and spaces"
+    },
+    {
+        "role": "assistant",
+        "content": '{"explanation": "This regex will match any line that contains only lower case letters and spaces. The \'^\' and \'$\' anchors ensure that the regex matches the entire line. The \'+\' quantifier after the character set \'[a-z ]\' matches one or more occurrences of lower case letters or spaces. The \'^$\' alternative matches empty lines.", "examples": ["hello world","this is a line with spaces","justlowercaseletters"," a line starting with a space and lowercase letters"],  "regex": "^[a-z ]+$|^$"}'
+    },
+    {
+        "role": "user",
+        "content": "Find the words separated by a '-'. Example lines that will match include  'Auto-tagging is helpful' or 'You should focus on note-taking'"
+    },
+    {
+        "role": "assistant",
+        "content": '{"explanation": "This regex will match any line that contains words separated by a \'-\' character. The character set \'\\\\w\' matches any word character (alphanumeric or underscore), the \'+\' quantifier matches one or more occurrences of word characters, and the \'-\' character is matched. The whole pattern is repeated one or more times with the \'\\\\s+\' to match one or more non-word characters between each group of words.",  "examples": ["Auto-tagging is helpful","You should focus on note-taking","This-line-has-four-words"],  "regex": "\\\\w+(?:-\\\\w+)+"}'
+    }
+]
+
 
 class mayberegex(OpenAIInteraction):
     def __init__(self, config_file='config.ini'):
         super().__init__(config_file)
 
     def fetch_json_data(self, prompt):
-        return self.generate_response(systemprompt, prompt, 150)
+        system_messages.append({"role": "user", "content": prompt})
+        return self.generate_message_response(system_messages, 150)
 
     def is_valid_json(self, json_str):
         try:

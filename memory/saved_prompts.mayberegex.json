@@ -1,0 +1,18 @@
+[
+    {
+        "role": "user",
+        "content": "match words that start with 'a'"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"explanation\": \"This regex will match any word that starts with the letter 'a'. The '\\\\b' word boundary anchor ensures that the regex matches only whole words. The 'a' character matches the letter 'a', and the '\\\\w*' quantifier matches zero or more word characters (alphanumeric or underscore) following the 'a'.\", \"examples\": [\"apple\", \"aardvark\", \"a\", \"an\", \"a_b_c\"], \"regex\": \"\\\\b(a\\\\w*)\"}"
+    },
+    {
+        "role": "user",
+        "content": "Match words that start with 'b'"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"explanation\": \"This regex will match any word that starts with the letter 'b'. The '\\\\b' word boundary anchor ensures that the regex matches only whole words. The 'b' character matches the letter 'b', and the '\\\\w*' quantifier matches zero or more word characters (alphanumeric or underscore) following the 'b'.\", \"examples\": [\"book\", \"bat\", \"ball\", \"bottle\", \"butterfly\"], \"regex\": \"\\\\b(b\\\\w*)\"}"
+    }
+]
