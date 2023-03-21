@@ -16,6 +16,10 @@ This script defines a `ManSearch` class, a subclass of `OpenAIInteraction`, whic
 This script defines a `mayberegex` class that uses the OpenAI API to generate a regular expression pattern based on a user prompt. It validates the response and tests the generated regex on sample inputs and user inputs. The script prompts the user to input their own strings and checks if they match the generated regex pattern.
 ### [`commitmeant.py`](./src/cli/commitmeant.py)
 This script defines a `Commitmeant` class that uses GPT's API to generate a concise commit message for Git repositories. It checks if the script is being run inside a Git repository, stages changes, gets a Git diff, and commits the changes with a GPT-generated commit message. The user is prompted to accept or reject the generated commit message. The script exits if the token length of the Git diff is too large or if there are no changes detected to commit.
+### [`promptprompt.py`](./src/cli/promptprompt.py)
+`promptprompt` is designed to assist users in creating comprehensive prompts for ChatGPT to respond to user requests. The class ensures that prompts are clear, concise, and contain all necessary information for ChatGPT to understand the user's request and provide an appropriate response. It also takes into account potential errors or misunderstandings and provides suggestions for correcting them.
+
+This is much better as a few-shot problem, so there are the configuration options `save_prompts` and `load_prompts` for keeping track of good responses. 
 
 ## Base files:
 ### [`openaiinteractions.py`](./src/openaiinteractions.py)

@@ -25,4 +25,5 @@ sys.path.insert(0, '$script_directory')
 
 from src.cli.$script_name import main
 main()
-"
+" "$@" 
+# wow the #@ was figured out by copilot, GPT-4 never figured that out.

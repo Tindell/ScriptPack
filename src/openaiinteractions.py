@@ -7,25 +7,22 @@ import json
 
 class OpenAIInteraction:
     def __init__(self, config_file='config.ini'):
-        print(config_file)
-
         # This is a hack to get the config file to load properly when run with runInCD 
         config_file = os.path.join(sys.path[0], config_file)
-
         config = configparser.ConfigParser()
         config.read(config_file)
-        print(config.sections())
 
         self.model = config.get('OPENAI', 'model', fallback='gpt-3.5-turbo')
-        self.printResponse = config.get('OPENAI', 'printResponse', fallback=True)
+        self.printResponse = config.getboolean('OPENAI', 'printResponse', fallback=True)
         self.operation = config.get('OPENAI', 'operation', fallback='generate_response')
         self.saved_prompts_location = config.get('OPENAI', 'saved_prompts_location', fallback='saved_prompts')
-        self.saved_prompts_filename = f"saved_prompts.{self.__class__.__name__}.json"
-        self.load_prompts = config.get('OPENAI', 'load_prompts', fallback=True)
-        self.save_prompts = config.get('OPENAI', 'save_prompts', fallback=True)
+        self.load_prompts = config.getboolean('OPENAI', 'load_prompts', fallback=True)
+        self.save_prompts = config.getboolean('OPENAI', 'save_prompts', fallback=True)
 
         self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
+
+        # TODO override config settings with command line arguments
 
     def save_prompt(self, prompt, response):
         saved_prompts = self.load_saved_prompts()
@@ -45,7 +42,6 @@ class OpenAIInteraction:
 
     def load_saved_prompts(self):
         filepath = os.path.join(self.saved_prompts_location, self.saved_prompts_filename)
-        print(self.saved_prompts_location)
 
         if os.path.exists(filepath):
             with open(filepath, 'r') as file:
@@ -65,7 +61,11 @@ class OpenAIInteraction:
 
         return new_messages
 
-    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False):
+    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False, file_name=None):
+        if not file_name:
+            file_name = self.__class__.__name__
+        self.saved_prompts_filename = f"saved_prompts.{file_name}.json"
+
         modified_message = self.load_prompts_into_messages(message)
         if self.printResponse:
             print("Modified message: ", modified_message)
@@ -96,7 +96,8 @@ class OpenAIInteraction:
             if self.printResponse:
                 print("Complete response: ", response)
 
-            if(self.save_prompts):
+            if self.save_prompts:
+                print(self.save_prompts)
                 self.save_prompt(modified_message[-1], response.choices[0].message.content.strip())
 
             return response.choices[0].message.content.strip()
@@ -111,12 +112,12 @@ class OpenAIInteraction:
 
 
 
-    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False):
+    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False, file_name=None):
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content},
         ]
-        return self.generate_message_response(messages, max_tokens, temperature, stream)
+        return self.generate_message_response(messages, max_tokens, temperature, stream, file_name)
 
     def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):
         """Returns the number of tokens used by a list of messages."""
