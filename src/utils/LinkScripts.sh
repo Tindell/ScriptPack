@@ -8,7 +8,6 @@ src_directory="$script_directory/src/cli"
 target_directory="/usr/local/bin"
 symlink_target="$script_directory/src/utils/runInCD"
 
-
 # Loop through all .py files in the src_directory
 for file in "$src_directory"/*.py; do
     # Get the filename without the .py extension
