@@ -15,8 +15,12 @@ def main():
     sp = input("Enter a system prompt: ")
 
     # read file from first command line argument as user prompt
-    up = open(sys.argv[1], 'r').read()
-
+    up = ""
+    if len(sys.argv) > 1:
+        up = open(sys.argv[1], 'r').read()
+    else:
+        up = input("Enter a user prompt: ")
+    
     # count the tokens in the user prompt using   def num_tokens_from_string(self, string, model="gpt-3.5-turbo-0301")
     tokens = sing.num_tokens_from_string(up)
     

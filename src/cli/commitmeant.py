@@ -25,11 +25,11 @@ class Commitmeant(OpenAIInteraction):
             {"role": "system", "content": "Generate a short and concise commit message based on the following git diff:"},
             {"role": "user", "content": git_diff},
         ]
-        token_length = self.num_tokens_from_messages(messages)
+        # token_length = self.num_tokens_from_messages(messages)
 
-        if token_length > 4097:
-            print("Token length of the git diff is too large (> 4097). Cancelling commit.")
-            exit(1)
+        # if token_length > 4097:
+            # print("Token length of the git diff is too large (> 4097). Cancelling commit.")
+            # exit(1)
 
         return git_diff
 

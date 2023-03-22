@@ -3,7 +3,7 @@ import json
 import re
 import openai
 import os
-from src.openaiinteractions import OpenAIInteraction
+from src.rememberer import Rememberer
 
 system_messages = [
     {
@@ -29,7 +29,7 @@ system_messages = [
 ]
 
 
-class mayberegex(OpenAIInteraction):
+class mayberegex(Rememberer):
     def __init__(self, config_file='config.ini'):
         super().__init__(config_file)
 
