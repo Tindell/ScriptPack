@@ -1,0 +1,18 @@
+[
+    {
+        "role": "user",
+        "content": "    def num_tokens_from_messages(self, messages, model=\"gpt-3.5-turbo-0301\"):\n        \"\"\"Returns the number of tokens used by a list of messages.\"\"\"\n        try:\n            encoding = tiktoken.encoding_for_model(model)\n        except KeyError:\n            encoding = tiktoken.get_encoding(\"cl100k_base\")\n        if model == \"gpt-3.5-turbo-0301\":  # note: future models may deviate from this\n            num_tokens = 0\n            for message in messages:\n                num_tokens += 4  # every message follows <im_start>{role/name}\\n{content}<im_end>\\n\n                for key, value in message.items():\n                    num_tokens += len(encoding.encode(value))\n                    if key == \"name\":  # if there's a name, the role is omitted\n                        num_tokens += -1  # role is always required and always 1 token\n            num_tokens += 2  # every reply is primed with <im_start>assistant\n            return num_tokens\n        else:\n            raise NotImplementedError(f\"\"\"num_tokens_from_messages() is not presently implemented for model {model}.\n        See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.\"\"\")\n"
+    },
+    {
+        "role": "assistant",
+        "content": "\ndef num_tokens_from_messages(self, messages, model=\"gpt-3.5-turbo-0301\"):\n    try:\n        encoding = tiktoken.encoding_for_model(model)\n    except KeyError:\n        encoding = tiktoken.get_encoding(\"cl100k_base\")\n    if model == \"gpt-3.5-turbo-0301\":\n        num_tokens = sum([4 + len(encoding.encode(value)) - 1 if key == \"name\" else 4 + len(encoding.encode(value)) for message in messages for key, value in message.items()])\n        num_tokens += 2 * len(messages)\n        return num_tokens\n    else:\n        raise NotImplementedError(f\"\"\"num_tokens_from_messages() is not presently implemented for model {model}.\n    See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.\"\"\")\n"
+    },
+    {
+        "role": "user",
+        "content": "\n    def num_tokens_from_string(self, string, model=\"gpt-3.5-turbo-0301\"):\n        \"\"\"Returns the number of tokens used by a string.\"\"\"\n        try:\n            encoding = tiktoken.encoding_for_model(model)\n        except KeyError:\n            encoding = tiktoken.get_encoding(\"cl100k_base\")\n        if model == \"gpt-3.5-turbo-0301\":\n            num_tokens = 4  # start token, role/name, newline, content\n            num_tokens += len(encoding.encode(string))\n            num_tokens += 2  # end token\n            return num_tokens\n        else:\n            raise NotImplementedError(f\"\"\"num_tokens_from_string() is not presently implemented for model {model}.\n        See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.\"\"\")"
+    },
+    {
+        "role": "assistant",
+        "content": "\ndef num_tokens_from_string(self, string, model=\"gpt-3.5-turbo-0301\"):\n    try:\n        encoding = tiktoken.encoding_for_model(model)\n    except KeyError:\n        encoding = tiktoken.get_encoding(\"cl100k_base\")\n    if model == \"gpt-3.5-turbo-0301\":\n        return 4 + len(encoding.encode(string)) + 2\n    else:\n        raise NotImplementedError(f\"\"\"num_tokens_from_string() is not presently implemented for model {model}.\n    See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.\"\"\")\n"
+    }
+]
