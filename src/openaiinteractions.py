@@ -17,7 +17,6 @@ class OpenAIInteraction:
         self.api_key = config.get_api_key()
         self.stream = config.get_stream()
 
-
     def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=None):
         if(stream is None):
             stream = self.stream
@@ -66,7 +65,7 @@ class OpenAIInteraction:
         ]
         return self.generate_message_response(messages, max_tokens, temperature, stream)
 
-    # TODO these are AI generated an not tested
+    # TODO I never tested these
     def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):
         try:
             encoding = tiktoken.encoding_for_model(model)

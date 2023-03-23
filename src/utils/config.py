@@ -22,6 +22,10 @@ class Config:
                             help='Specify whether to save prompts to file')
         parser.add_argument('--stream', '-s', dest='stream', type=bool, default=False,
                             help='Specify whether to stream the response from OpenAI')
+        parser.add_argument('-f', '--file', dest='system_prompt_file',
+                            help='Specify the system prompt file; not always used')
+        parser.add_argument('-t', '--max_tokens', dest='max_tokens', type=int,
+                            help='Specify the number of tokens for OpenAI response')
 
         self.args = parser.parse_args()
 
@@ -46,7 +50,8 @@ class Config:
             self.config.set('OPENAI', 'save_prompts', str(self.args.save_prompts))
         if self.args.stream:
             self.config.set('OPENAI', 'stream', str(self.args.stream))
-
+        if self.args.max_tokens:
+            self.config.set('OPENAI', 'max_tokens', str(self.args.max_tokens))
 
     def get_model(self):
         return self.config.get('OPENAI', 'model', fallback='gpt-3.5-turbo')
@@ -71,3 +76,9 @@ class Config:
 
     def get_stream(self):
         return self.config.getboolean('OPENAI', 'stream', fallback=False)
+    
+    def get_system_prompt_file(self):
+        return self.args.system_prompt_file
+
+    def get_max_tokens(self):
+        return self.config.getint('OPENAI', 'max_tokens', fallback=100)
