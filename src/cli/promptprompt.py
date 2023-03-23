@@ -19,7 +19,7 @@ def main():
         {"role": "user", "content": up}
     ]
 
-    response = prompter.generate_message_response(messages, max_tokens=rt, stream=False)
+    response = prompter.generate_message_response(messages, max_tokens=rt)
 
 
 if __name__ == "__main__":

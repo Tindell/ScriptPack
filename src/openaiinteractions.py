@@ -15,9 +15,13 @@ class OpenAIInteraction:
         self.printResponse = config.get_print_response()
         self.operation = config.get_operation()
         self.api_key = config.get_api_key()
+        self.stream = config.get_stream()
 
         openai.api_key = self.api_key
-    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False):
+    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=None):
+        if(stream is None):
+            stream = self.stream
+
         if self.printResponse:
             print("Modified message: ", message)
             
@@ -57,7 +61,7 @@ class OpenAIInteraction:
         else:
             raise ValueError(f"Invalid operation: {self.operation}. Supported operations are 'generate_response' and 'count_tokens'.")
 
-    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False):
+    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=None):
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content},

@@ -20,6 +20,8 @@ class Config:
                             help='Specify whether to load prompts from file')
         parser.add_argument('--save_prompts', dest='save_prompts', type=bool,
                             help='Specify whether to save prompts to file')
+        parser.add_argument('--stream', '-s', dest='stream', type=bool, default=False,
+                            help='Specify whether to stream the response from OpenAI')
 
         self.args = parser.parse_args()
 
@@ -42,6 +44,9 @@ class Config:
             self.config.set('OPENAI', 'load_prompts', str(self.args.load_prompts))
         if self.args.save_prompts:
             self.config.set('OPENAI', 'save_prompts', str(self.args.save_prompts))
+        if self.args.stream:
+            self.config.set('OPENAI', 'stream', str(self.args.stream))
+
 
     def get_model(self):
         return self.config.get('OPENAI', 'model', fallback='gpt-3.5-turbo')
@@ -64,3 +69,5 @@ class Config:
     def get_save_prompts(self):
         return self.config.getboolean('OPENAI', 'save_prompts', fallback=True)
 
+    def get_stream(self):
+        return self.config.getboolean('OPENAI', 'stream', fallback=False)

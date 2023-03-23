@@ -50,7 +50,7 @@ class Rememberer(OpenAIInteraction):
 
         return new_messages
     
-    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False, file_name=None):
+    def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=None, file_name=None):
         if not file_name:
             file_name = self.__class__.__name__
         saved_prompts_filename = f"saved_prompts.{file_name}.json"
@@ -70,7 +70,7 @@ class Rememberer(OpenAIInteraction):
 
         return response
     
-    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=False, file_name=None):
+    def generate_response(self, system_prompt, user_content, max_tokens=100, temperature=0.5, stream=None, file_name=None):
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content},
