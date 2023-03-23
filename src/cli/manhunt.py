@@ -7,8 +7,8 @@ from src.openaiinteractions import OpenAIInteraction
 system_prompt = "Your job is to find information in a provided man page.  If the information requested isn't in the page, your job is to say 'I can't find anything about that'."
 
 class ManSearch(OpenAIInteraction):
-    def __init__(self, config_file='config.ini'):
-        super().__init__(config_file)
+    def __init__(self):
+        super().__init__()
 
     def get_man_page(self, command):
         try:

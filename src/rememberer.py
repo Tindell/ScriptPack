@@ -3,14 +3,14 @@ import json
 import configparser
 import sys
 from src.openaiinteractions import OpenAIInteraction
-
+from src.utils.config import Config
 
 class Rememberer(OpenAIInteraction):
-    def __init__(self, config_file='config.ini'):
-        super().__init__(config_file)
-        self.saved_prompts_location = self.config.get('OPENAI', 'saved_prompts_location', fallback='saved_prompts')
-        self.load_prompts = self.config.getboolean('OPENAI', 'load_prompts', fallback=True)
-        self.save_prompts = self.config.getboolean('OPENAI', 'save_prompts', fallback=True)
+    def __init__(self):
+        super().__init__()
+        self.saved_prompts_location = self.config.get_saved_prompts_location()
+        self.load_prompts = self.config.get_load_prompts()
+        self.save_prompts = self.config.get_save_prompts()
 
     def save_prompt(self, prompt, response, saved_prompts_filename):
         saved_prompts = self.load_saved_prompts(saved_prompts_filename)

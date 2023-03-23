@@ -18,8 +18,8 @@ system_prompts = {
 }
 
 class ClipTweak(Rememberer):
-    def __init__(self, config_file='config.ini'):
-        super().__init__(config_file)
+    def __init__(self):
+        super().__init__()
 
     def process_clipboard_content(self, clipboard_content):
         print("Processing text")

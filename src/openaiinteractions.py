@@ -3,26 +3,21 @@ import openai
 import configparser
 import sys
 import tiktoken
-import json
+import argparse
+from src.utils.config import Config
 
 class OpenAIInteraction:
-    def __init__(self, config_file='config.ini'):
+    def __init__(self):
+        config = Config()
         # This is a hack to get the config file to load properly when run with runInCD 
-        config_file = os.path.join(sys.path[0], config_file)
-        self.config = configparser.ConfigParser()
-        self.config.read(config_file)
+        self.config = config
+        self.model = config.get_model()
+        self.printResponse = config.get_print_response()
+        self.operation = config.get_operation()
+        self.api_key = config.get_api_key()
 
-        self.model = self.config.get('OPENAI', 'model', fallback='gpt-3.5-turbo')
-        self.printResponse = self.config.getboolean('OPENAI', 'printResponse', fallback=True)
-        self.operation = self.config.get('OPENAI', 'operation', fallback='generate_response')
-
-        self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
-
-        # TODO override config settings with command line arguments
-
     def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=False):
-
         if self.printResponse:
             print("Modified message: ", message)
             

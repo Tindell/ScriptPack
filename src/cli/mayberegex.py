@@ -30,8 +30,8 @@ system_messages = [
 
 
 class mayberegex(Rememberer):
-    def __init__(self, config_file='config.ini'):
-        super().__init__(config_file)
+    def __init__(self):
+        super().__init__()
 
     def fetch_json_data(self, prompt):
         system_messages.append({"role": "user", "content": prompt})
