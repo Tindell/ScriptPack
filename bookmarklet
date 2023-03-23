@@ -1,0 +1,24 @@
+// Here's a bookmarket for extracting the text from the chat window.
+javascript:(function() {
+  var text = "";
+  var elements = document.body.querySelectorAll("div.group");
+  for (var i = 0; i < elements.length; i++) {
+    var elementText = elements[i].innerText;
+    if (elementText && elementText.trim() !== "") {
+      if (elements[i].classList.contains("bg-gray-50")) {
+        text += "\n-------------------------------\nassistant:\n" + elementText.trim() + "\n";
+      } else {
+        text += "\n-------------------------------\nuser:\n" + elementText.trim() + "\n";
+      }
+    }
+  }
+  if (text === "") {
+    alert("No text found in the current window");
+  } else {
+    navigator.clipboard.writeText(text).then(function() {
+      alert("Text copied to clipboard");
+    }, function() {
+      alert("Error copying text to clipboard");
+    });
+  }
+})();
