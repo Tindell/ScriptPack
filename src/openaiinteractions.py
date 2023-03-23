@@ -1,15 +1,15 @@
-import os
-import openai
-import configparser
-import sys
 import tiktoken
-import argparse
 from src.utils.config import Config
+from src.apis.abstractcompletion import AbstractCompletion
+from src.apis.openaicompletion import OpenAICompletion
 
 class OpenAIInteraction:
     def __init__(self):
+
+        # these should be injected but I don't  want to change every child class's constructor
         config = Config()
-        # This is a hack to get the config file to load properly when run with runInCD 
+        self.api : AbstractCompletion = OpenAICompletion(config.get_api_key(), config.get_model())
+        
         self.config = config
         self.model = config.get_model()
         self.printResponse = config.get_print_response()
@@ -17,18 +17,16 @@ class OpenAIInteraction:
         self.api_key = config.get_api_key()
         self.stream = config.get_stream()
 
-        openai.api_key = self.api_key
+
     def generate_message_response(self, message, max_tokens=100, temperature=0.5, stream=None):
         if(stream is None):
             stream = self.stream
 
         if self.printResponse:
             print("Modified message: ", message)
-            
         
         if self.operation == 'generate_response':
-            response = openai.ChatCompletion.create(
-                model=self.model,
+            response = self.api.generate_response(
                 messages=message,
                 max_tokens=max_tokens,
                 n=1,
