@@ -9,7 +9,7 @@ In `config.ini`, change the `saved_prompts_location` to your project's memory fo
 Make sure your openai API key is saved in the environment variable `OPENAI_API_KEY`, or provided as an argument when you run the scripts. 
 
 
-## Running locally
+## Running in terminal
 ```
 > cd .../src/utils
 > ./LinkScripts.sh
@@ -17,6 +17,21 @@ Make sure your openai API key is saved in the environment variable `OPENAI_API_K
 Then you can run each script by name anywhere. For example, 
 
 `> commitmeant`
+
+## Running with mac automator
+You can automate running the command line scripts using Mac Automator. Here's how to set it up:
+
+1. Open Automator from the Applications folder on your Mac.
+2. Create a new Quick Action by selecting "Quick Action" in the list of document types and clicking "Choose".
+3. In the Quick Action template, change the "Workflow receives" dropdown to "no input".
+4. Search for "Run Shell Script" and drag it into the workflow.
+5. Add the command `python3 <...>/src/utils/openterm.py cliptweak` replacing `<...>` with your project path and adding changing `cliptweak` script you want to automate.
+6. Save the workflow and give it a name.
+7. Open the "Keyboard" settings on your Mac.
+8. Click on the "Shortcuts" tab, then select "Services" from the list on the left.
+9. Scroll down to the "Text" section and find your workflow under "General".
+10. Click on your workflow to select it, then click on the "Add Shortcut" button and enter a keyboard shortcut.
+11. You may need to restart your computer for the keyboard shortcut to take effect.
 
 ### Optional command line args for any of these scripts
 - `--model`: specifies the OpenAI model to use for generating responses. Format: string.
@@ -54,3 +69,4 @@ This is much better as a few-shot problem, so there are the configuration option
 This script defines a class called `OpenAIInteraction` that interacts with OpenAI's GPT-3 language model to generate responses to user prompts. The class reads parameters such as the API key and model to be used from a configuration file. It provides two main methods, `generate_message_response` and `generate_response`, which take in user prompts and generate responses using the GPT-3 model. The class also includes methods to count the number of tokens used by a list of messages or a string. These methods can be used for debugging or to ensure that responses do not exceed the token limits imposed by OpenAI.
 ### [`openterm.py`](./src/utils/openterm.py)
 This script opens a new terminal window and runs a specified command (only on macOS). It can be used to automate running these scripts outside of the terminal, for example binding cliptweak to a key binding.
+

@@ -1,10 +1,10 @@
+#!/bin/sh
+
 # Create a symlink to this file in bin
 # name it the name of the script to run (commitmeant)
 # It will execute in the current directory, but with this projects pipenv
 # 
 # There is probably a better way, but this is how chatgpt told me to do it
-#!/bin/sh
-
 original_directory=$(pwd)
 
 # Find the actual location of the script
